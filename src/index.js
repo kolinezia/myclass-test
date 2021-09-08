@@ -1,11 +1,13 @@
 const express = require('express');
 
 const sequelize = require('./db');
+const lessonsRouter = require('./routes/lessons.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use('/api', lessonsRouter);
 
 (async function dbconnect() {
     try {

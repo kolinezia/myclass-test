@@ -10,7 +10,7 @@ const lessons = sequelize.define('lessons', {
     },
 
     date: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: false,
     },
 

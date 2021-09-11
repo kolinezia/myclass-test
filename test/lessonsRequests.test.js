@@ -9,7 +9,7 @@ describe('GET /api/', () => {
             .query('date=2019-06-17')
             .query('status=0')
             .query('teacherIds=1')
-            .query('studentsCount=3')
+            .query('studentsCount=2')
             .query('page=1')
             .query('lessonsPerPage=5');
 
@@ -106,6 +106,14 @@ describe('GET /api/', () => {
             .query('studentsCount=error')
             .query('page=error')
             .query('lessonsPerPage=error');
+        expect(res.status).toEqual(400);
+    });
+});
+
+describe('POST /api/lessons', () => {
+    it('expect status 400 (with incorrect body)', async () => {
+        const res = await request(app)
+            .post('/api/lessons');
         expect(res.status).toEqual(400);
     });
 });

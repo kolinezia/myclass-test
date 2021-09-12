@@ -10,11 +10,17 @@ function validateParams(params) {
 module.exports.getLessonsByParams = async (params) => {
     if (validateParams(params)) {
         const result = models.Lessons.findAll({
+            attributes: {
+                include: [[Sequelize.literal(`(SELECT COUNT(*)::INTEGER FROM lesson_students AS lesson_students  WHERE 
+                lesson_students.lesson_id = "lessons"."id" AND lesson_students.visit = true)`), 'visitCount']],
+            },
             include: [
                 {
                     model: models.Students,
-                    through: { attributes: ['visit'] },
-                    attributes: ['id', 'name'],
+                    through: { attributes: [] },
+                    attributes: {
+                        include: [[Sequelize.literal('"students->lesson_students".visit'), 'visit']],
+                    },
                     required: true,
                 },
                 {
@@ -63,25 +69,7 @@ module.exports.getLessonsByParams = async (params) => {
                         ? +params.lessonsPerPage * (+params.page - 1)
                         : 5 * (+params.page - 1)
             ) : 0,
-        })
-        // добавление student.visit из lesson_students и visitCount
-            .then((lessons) => {
-                console.log(lessons);
-                const newLessons = lessons.map((lesson) => {
-                    let visitCount = 0;
-                    const newLesson = lesson.dataValues;
-                    newLesson.students.map((student) => {
-                        const newStudent = student.dataValues;
-                        newStudent.visit = newStudent.lesson_students.visit;
-                        if (newStudent.visit === true) visitCount += 1;
-                        delete newStudent.lesson_students;
-                        return newStudent;
-                    });
-                    newLesson.visitCount = visitCount;
-                    return newLesson;
-                });
-                return newLessons;
-            });
+        });
         return result;
     }
     return false;

@@ -32,7 +32,7 @@ module.exports.createLessons = async (req, res) => {
         if (req.body.lastDate) body.lastDate = req.body.lastDate;
 
         const lessonsIds = await lessonsService.createLessons(body);
-        res.status(400).json(lessonsIds);
+        res.json(lessonsIds);
     } catch (error) {
         res.status(error.status || 500).json({
             success: false,

@@ -20,3 +20,24 @@ module.exports.getByParams = async (req, res) => {
         });
     }
 };
+
+module.exports.createLessons = async (req, res) => {
+    try {
+        const body = {};
+        if (req.body.teachersIds) body.teachersIds = req.body.teachersIds;
+        if (req.body.title) body.title = req.body.title;
+        if (req.body.days) body.days = req.body.days;
+        if (req.body.firstDate) body.firstDate = req.body.firstDate;
+        if (req.body.lessonsCount) body.lessonsCount = req.body.lessonsCount;
+        if (req.body.lastDate) body.lastDate = req.body.lastDate;
+
+        const lessonsIds = await lessonsService.createLessons(body);
+        res.status(400).json(lessonsIds);
+    } catch (error) {
+        res.status(error.status || 500).json({
+            success: false,
+            name: error.name ? error.name : 'LessonsService Error',
+            message: error.message ? error.message : error,
+        });
+    }
+};

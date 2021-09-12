@@ -11,26 +11,11 @@ module.exports.getByParams = async (req, res) => {
         if (req.query.lessonsPerPage) params.lessonsPerPage = req.query.lessonsPerPage;
 
         const lessons = await lessonsService.getLessonsByParams(params);
-        if (lessons !== false) {
-            res.json(lessons);
-        } else {
-            res.status(400).json({ message: 'incorrect params' });
-        }
+        res.json(lessons);
     } catch (error) {
-        res.status(500).json({
+        res.status(error.status || 500).json({
             success: false,
-            message: error.message ? error.message : error,
-        });
-    }
-};
-
-module.exports.createLessons = async (req, res) => {
-    try {
-        
-        res.status(400).json({});
-    } catch (error) {
-        res.status(500).json({
-            success: false,
+            name: error.name ? error.name : 'LessonsService Error',
             message: error.message ? error.message : error,
         });
     }
